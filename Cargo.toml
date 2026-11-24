@@ -291,6 +291,11 @@ optional = true
 version = "0.3.3"
 optional = true
 
+[dependencies.time]
+version = "0.3.55"
+optional = true
+features = ["large-dates"]
+
 [dependencies.tokio]
 version = "1.54.1"
 optional = true
@@ -354,6 +359,7 @@ engine = [
     "dep:strum",
     "dep:strum_macros",
     "dep:tempfile",
+    "dep:time",
     "dep:tokio",
     "dep:uuid"
 ]
