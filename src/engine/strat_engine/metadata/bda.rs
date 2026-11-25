@@ -189,7 +189,7 @@ mod tests {
                 sh.identifiers,
                 sh.mda_size.region_size().data_size(),
                 sh.blkdev_size,
-                Utc::now(),
+                UtcDateTime::now(),
             );
             bda.initialize(&mut buf).unwrap();
             let read_results = StaticHeader::read_sigblocks(&mut buf);
@@ -221,7 +221,7 @@ mod tests {
             sh.identifiers,
             sh.mda_size.region_size().data_size(),
             sh.blkdev_size,
-            Utc::now(),
+            UtcDateTime::now(),
         );
         bda.initialize(&mut buf).unwrap();
 
@@ -272,7 +272,7 @@ mod tests {
                 sh.identifiers,
                 sh.mda_size.region_size().data_size(),
                 sh.blkdev_size,
-                Utc::now(),
+                UtcDateTime::now(),
             );
             bda.initialize(&mut buf).unwrap();
             let current_time = Utc::now();

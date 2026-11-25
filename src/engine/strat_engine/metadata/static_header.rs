@@ -9,7 +9,6 @@ use std::{
 };
 
 use byteorder::{ByteOrder, LittleEndian};
-use chrono::{DateTime, Utc};
 use crc::{Crc, CRC_32_ISCSI};
 use serde_json::Value;
 use time::UtcDateTime;
@@ -572,14 +571,11 @@ pub mod tests {
 
     use proptest::{option, prelude::BoxedStrategy, strategy::Strategy};
 
-    use chrono::Utc;
+    use time::Duration;
 
     use devicemapper::{Bytes, Sectors, IEC};
 
-    use crate::engine::{
-        shared::now_to_timestamp,
-        strat_engine::metadata::sizes::{static_header_size, MDADataSize},
-    };
+    use crate::engine::strat_engine::metadata::sizes::{static_header_size, MDADataSize};
 
     use super::*;
 
@@ -626,7 +622,7 @@ pub mod tests {
             StratisIdentifiers::new(pool_uuid, dev_uuid),
             mda_data_size,
             BlockdevSize::new(blkdev_size),
-            Utc::now(),
+            UtcDateTime::now(),
         )
     }
 
@@ -742,14 +738,13 @@ pub mod tests {
     fn test_rewrite_older_sigblock() {
         let sh = random_static_header(10000, 4);
 
-        let ts = now_to_timestamp();
+        let ts = sh.initialization_time;
         let sh_older = StaticHeader {
             initialization_time: ts,
             ..sh
         };
         let sh_newer = StaticHeader {
-            initialization_time: DateTime::from_timestamp(ts.timestamp() + 1, 0)
-                .expect("DateTime::timestamp() always returns valid seconds value"),
+            initialization_time: ts + Duration::seconds(1),
             ..sh
         };
         assert_ne!(sh_older, sh_newer);

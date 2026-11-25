@@ -294,7 +294,7 @@ impl MetaDataSize {
     }
 }
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug)]
 pub struct MDAHeader {
     last_updated: UtcDateTime,
 
@@ -303,6 +303,16 @@ pub struct MDAHeader {
     used: MetaDataSize,
 
     data_crc: u32,
+}
+
+impl Default for MDAHeader {
+    fn default() -> Self {
+        Self {
+            last_updated: UtcDateTime::UNIX_EPOCH,
+            used: MetaDataSize::default(),
+            data_crc: 0,
+        }
+    }
 }
 
 impl MDAHeader {
