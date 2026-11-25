@@ -13,6 +13,7 @@ use chrono::{DateTime, Utc};
 use data_encoding::BASE32_NOPAD;
 use retry::{delay::Fixed, retry_with_index};
 use serde_json::{Map, Value};
+use time::UtcDateTime;
 
 use devicemapper::{
     Bytes, DevId, DmDevice, DmName, DmOptions, DmUuid, Sectors, ThinDev, ThinDevId, ThinPoolDev,
@@ -49,7 +50,7 @@ const TEMP_MNT_POINT_PREFIX: &str = "stratis_mp_";
 #[derive(Debug)]
 pub struct StratFilesystem {
     thin_dev: ThinDev,
-    created: DateTime<Utc>,
+    created: UtcDateTime,
     used: Option<Bytes>,
     size_limit: Option<Sectors>,
     origin: Option<FilesystemUuid>,

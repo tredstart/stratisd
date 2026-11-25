@@ -10,6 +10,7 @@ use std::{
 use byteorder::{ByteOrder, LittleEndian};
 use chrono::{DateTime, Utc};
 use crc::{Crc, CRC_32_ISCSI};
+use time::UtcDateTime;
 
 use devicemapper::Bytes;
 
@@ -295,7 +296,7 @@ impl MetaDataSize {
 
 #[derive(Clone, Debug, Default)]
 pub struct MDAHeader {
-    last_updated: DateTime<Utc>,
+    last_updated: UtcDateTime,
 
     /// Size of the variable length metadata last written in the corresponding MDA region.
     /// If no variable length has been written, the size is 0 bytes.

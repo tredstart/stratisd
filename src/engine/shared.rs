@@ -17,6 +17,7 @@ use std::{
 use chrono::{DateTime, Utc};
 use nix::poll::{poll, PollFd, PollFlags};
 use regex::Regex;
+use time::UtcDateTime;
 
 use devicemapper::{Bytes, Sectors, IEC, SECTOR_SIZE};
 
@@ -348,14 +349,16 @@ pub fn total_allocated(allocated: &Diff<Bytes>, metadata_size: &Diff<Bytes>) -> 
 
 /// Convert a u64 value representing seconds, and a u32 value representing
 /// nanoseconds to a timestamp.
-pub fn unsigned_to_timestamp(secs: u64, nanos: u32) -> StratisResult<DateTime<Utc>> {
+/// Nanoseconds must be less than 1_000_000_000.
+pub fn unsigned_to_timestamp(secs: u64, nanos: u32) -> StratisResult<UtcDateTime> {
     match secs.try_into() {
-        Ok(val) => match DateTime::from_timestamp(val, nanos) {
-            Some(timestamp) => Ok(timestamp),
-            None => Err(StratisError::Msg(format!(
-                "{val} (for seconds) and {nanos} (for nanoseconds) are not valid timestamp args"
-            ))),
-        },
+        Ok(val) => UtcDateTime::from_unix_timestamp(val)
+            .and_then(|timestamp| timestamp.replace_nanosecond(nanos))
+            .map_err(|_| {
+                StratisError::Msg(format!(
+                    "{val} (for seconds) and {nanos} (for nanoseconds) are not valid timestamp args"
+                ))
+            }),
         Err(_) => Err(StratisError::Msg(format!(
             "{secs} can not be converted into i64 to be used as seconds value in timestamp"
         ))),

@@ -12,6 +12,7 @@ use byteorder::{ByteOrder, LittleEndian};
 use chrono::{DateTime, Utc};
 use crc::{Crc, CRC_32_ISCSI};
 use serde_json::Value;
+use time::UtcDateTime;
 
 use devicemapper::{Sectors, IEC, SECTOR_SIZE};
 
@@ -136,7 +137,7 @@ pub struct StaticHeader {
     pub mda_size: MDASize,
     pub reserved_size: ReservedSize,
     pub flags: u64,
-    pub initialization_time: DateTime<Utc>,
+    pub initialization_time: UtcDateTime,
 }
 
 impl StaticHeader {
