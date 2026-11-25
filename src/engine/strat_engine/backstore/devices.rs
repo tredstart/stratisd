@@ -12,9 +12,9 @@ use std::{
     sync::{LazyLock, Mutex},
 };
 
-use chrono::Utc;
 use itertools::Itertools;
 use nix::sys::stat::stat;
+use time::UtcDateTime;
 
 use devicemapper::{Bytes, Device, Sectors, IEC};
 use libblkid_rs::{BlkidCache, BlkidProbe};
@@ -582,7 +582,7 @@ pub fn initialize_devices_legacy(
             StratisIdentifiers::new(pool_uuid, dev_uuid),
             mda_data_size,
             data_size,
-            Utc::now(),
+            UtcDateTime::now(),
         );
 
         bda.initialize(&mut f)?;
@@ -830,7 +830,7 @@ pub fn initialize_devices(
             StratisIdentifiers::new(pool_uuid, dev_uuid),
             mda_data_size,
             data_size,
-            Utc::now(),
+            UtcDateTime::now(),
         );
 
         bda.initialize(&mut f)?;

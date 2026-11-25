@@ -4,14 +4,13 @@
 
 use std::path::{Path, PathBuf};
 
-use chrono::{DateTime, Utc};
 use serde_json::{Map, Value};
+use time::UtcDateTime;
 
 use devicemapper::{Bytes, Sectors, IEC};
 
 use crate::engine::{
     engine::BlockDev,
-    shared::now_to_timestamp,
     types::{DevUuid, StratSigblockVersion},
 };
 
@@ -21,7 +20,7 @@ pub struct SimDev {
     devnode: PathBuf,
     user_info: Option<String>,
     hardware_info: Option<String>,
-    initialization_time: DateTime<Utc>,
+    initialization_time: UtcDateTime,
 }
 
 impl SimDev {
@@ -48,7 +47,7 @@ impl BlockDev for SimDev {
         self.hardware_info.as_deref()
     }
 
-    fn initialization_time(&self) -> DateTime<Utc> {
+    fn initialization_time(&self) -> UtcDateTime {
         self.initialization_time
     }
 
@@ -74,7 +73,9 @@ impl SimDev {
                 devnode: devnode.to_owned(),
                 user_info: None,
                 hardware_info: None,
-                initialization_time: now_to_timestamp(),
+                initialization_time: UtcDateTime::now()
+                    .replace_nanosecond(0)
+                    .expect("Truncating a valid timestamp to whole seconds cannot fail"),
             },
         )
     }

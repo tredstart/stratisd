@@ -146,7 +146,7 @@ impl StaticHeader {
         identifiers: StratisIdentifiers,
         mda_data_size: MDADataSize,
         blkdev_size: BlockdevSize,
-        initialization_time: DateTime<Utc>,
+        initialization_time: UtcDateTime,
     ) -> StaticHeader {
         StaticHeader {
             blkdev_size,
@@ -155,8 +155,9 @@ impl StaticHeader {
             mda_size: mda_data_size.region_size().mda_size(),
             reserved_size: ReservedSize::new(RESERVED_SECTORS),
             flags: 0,
-            initialization_time: DateTime::from_timestamp(initialization_time.timestamp(), 0)
-                .expect("DateTime::timestamp() always returns valid seconds value"),
+            initialization_time: initialization_time
+                .replace_nanosecond(0)
+                .expect("Truncating a valid timestamp to whole seconds cannot fail"),
         }
     }
 
@@ -503,7 +504,7 @@ impl StaticHeader {
         LittleEndian::write_u64(&mut buf[104..112], *self.reserved_size.sectors());
         LittleEndian::write_u64(
             &mut buf[120..128],
-            self.initialization_time.timestamp() as u64,
+            self.initialization_time.unix_timestamp() as u64,
         );
 
         let hdr_crc = CASTAGNOLI.checksum(&buf[4..bytes!(static_header_size::SIGBLOCK_SECTORS)]);

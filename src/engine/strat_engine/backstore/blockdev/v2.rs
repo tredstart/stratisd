@@ -13,6 +13,7 @@ use std::{
 
 use chrono::{DateTime, Utc};
 use serde_json::Value;
+use time::UtcDateTime;
 
 use devicemapper::{Bytes, Device, Sectors};
 
@@ -400,7 +401,7 @@ impl BlockDev for StratBlockDev {
         self.hardware_info.as_deref()
     }
 
-    fn initialization_time(&self) -> DateTime<Utc> {
+    fn initialization_time(&self) -> UtcDateTime {
         self.bda.initialization_time()
     }
 

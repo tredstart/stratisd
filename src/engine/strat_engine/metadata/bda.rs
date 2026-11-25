@@ -5,6 +5,7 @@
 use std::io::{Read, Seek};
 
 use chrono::{DateTime, Utc};
+use time::UtcDateTime;
 
 use crate::{
     engine::{
@@ -34,7 +35,7 @@ impl Default for BDA {
             StratisIdentifiers::new(PoolUuid::nil(), DevUuid::nil()),
             MDADataSize::default(),
             BlockdevSize::default(),
-            DateTime::default(),
+            UtcDateTime::UNIX_EPOCH,
         )
     }
 }
@@ -45,7 +46,7 @@ impl BDA {
         identifiers: StratisIdentifiers,
         mda_data_size: MDADataSize,
         blkdev_size: BlockdevSize,
-        initialization_time: DateTime<Utc>,
+        initialization_time: UtcDateTime,
     ) -> BDA {
         let header = StaticHeader::new(
             sigblock_version,
@@ -152,7 +153,7 @@ impl BDA {
     }
 
     /// Timestamp when the device was initialized.
-    pub fn initialization_time(&self) -> DateTime<Utc> {
+    pub fn initialization_time(&self) -> UtcDateTime {
         self.header.initialization_time
     }
 

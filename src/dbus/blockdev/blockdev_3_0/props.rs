@@ -19,7 +19,7 @@ pub fn hardware_info_prop(_: BlockDevTier, _: DevUuid, dev: &dyn BlockDev) -> (b
 }
 
 pub fn init_time_prop(_: BlockDevTier, _: DevUuid, dev: &dyn BlockDev) -> Result<u64, Error> {
-    u64::try_from(dev.initialization_time().timestamp()).map_err(|e| Error::Failed(e.to_string()))
+    u64::try_from(dev.initialization_time().unix_timestamp()).map_err(|e| Error::Failed(e.to_string()))
 }
 
 pub fn physical_path_prop(_: BlockDevTier, _: DevUuid, dev: &dyn BlockDev) -> String {

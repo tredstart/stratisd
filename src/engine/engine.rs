@@ -14,6 +14,7 @@ use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use either::Either;
 use serde_json::Value;
+use time::UtcDateTime;
 
 use devicemapper::{Bytes, Sectors};
 
@@ -120,7 +121,7 @@ pub trait BlockDev: Debug {
 
     /// The time that this blockdev was initialized by Stratis, rounded down
     /// to the nearest second.
-    fn initialization_time(&self) -> DateTime<Utc>;
+    fn initialization_time(&self) -> UtcDateTime;
 
     /// The total size of the device, including space not usable for data.
     fn size(&self) -> Sectors;
