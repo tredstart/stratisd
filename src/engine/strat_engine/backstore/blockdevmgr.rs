@@ -8,8 +8,8 @@ use std::collections::HashMap;
 #[cfg(test)]
 use std::collections::HashSet;
 
-use chrono::{DateTime, Duration, Utc};
 use rand::{rng, seq::IteratorRandom};
+use time::{SignedDuration, UtcDateTime};
 
 use devicemapper::{Bytes, Device, Sectors};
 
@@ -40,11 +40,11 @@ const MAX_NUM_TO_WRITE: usize = 10;
 
 #[derive(Debug)]
 struct TimeStamp {
-    inner: Option<DateTime<Utc>>,
+    inner: Option<UtcDateTime>,
 }
 
-impl From<Option<DateTime<Utc>>> for TimeStamp {
-    fn from(time: Option<DateTime<Utc>>) -> Self {
+impl From<Option<UtcDateTime>> for TimeStamp {
+    fn from(time: Option<UtcDateTime>) -> Self {
         TimeStamp { inner: time }
     }
 }
@@ -52,12 +52,12 @@ impl From<Option<DateTime<Utc>>> for TimeStamp {
 impl TimeStamp {
     // Get the best next time stamp; at least now() and at least one
     // nanosecond more than the previous.
-    fn next(&self) -> DateTime<Utc> {
-        let current_time = Utc::now();
+    fn next(&self) -> UtcDateTime {
+        let current_time = UtcDateTime::now();
         if Some(current_time) <= self.inner {
             self.inner
                 .expect("self.inner >= Some(current_time")
-                .checked_add_signed(Duration::nanoseconds(1))
+                .checked_add(SignedDuration::nanoseconds(1))
                 .expect("self.inner << maximum representable DateTime")
         } else {
             current_time
@@ -65,7 +65,7 @@ impl TimeStamp {
     }
 
     // Set the time stamp to a new value.
-    fn set(&mut self, time: DateTime<Utc>) {
+    fn set(&mut self, time: UtcDateTime) {
         self.inner = Some(time);
     }
 }
@@ -282,7 +282,7 @@ where
     B: InternalBlockDev,
 {
     /// Make a struct that represents an existing BlockDevMgr.
-    pub fn new(block_devs: Vec<B>, last_update_time: Option<DateTime<Utc>>) -> BlockDevMgr<B> {
+    pub fn new(block_devs: Vec<B>, last_update_time: Option<UtcDateTime>) -> BlockDevMgr<B> {
         BlockDevMgr {
             block_devs,
             last_update_time: last_update_time.into(),

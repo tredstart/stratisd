@@ -10,8 +10,8 @@ use std::{
     fs::OpenOptions,
 };
 
-use chrono::{DateTime, Utc};
 use itertools::Itertools;
+use time::UtcDateTime;
 
 use devicemapper::Sectors;
 
@@ -47,7 +47,7 @@ use crate::{
 pub fn get_metadata(
     infos: &HashMap<DevUuid, &LStratisInfo>,
     allow_missing_cache: bool,
-) -> StratisResult<Option<(DateTime<Utc>, PoolSave)>> {
+) -> StratisResult<Option<(UtcDateTime, PoolSave)>> {
     // Try to read from all available devnodes that could contain most
     // recent metadata. In the event of errors, continue to try until all are
     // exhausted.

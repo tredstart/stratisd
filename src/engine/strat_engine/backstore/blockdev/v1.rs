@@ -11,7 +11,6 @@ use std::{
     path::Path,
 };
 
-use chrono::{DateTime, Utc};
 use serde_json::Value;
 use time::UtcDateTime;
 
@@ -499,7 +498,7 @@ impl InternalBlockDev for StratBlockDev {
         }
     }
 
-    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &DateTime<Utc>)>> {
+    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &UtcDateTime)>> {
         let mut f = OpenOptions::new()
             .read(true)
             .open(self.underlying_device.metadata_path())?;
@@ -512,7 +511,7 @@ impl InternalBlockDev for StratBlockDev {
         }
     }
 
-    fn save_state(&mut self, time: &DateTime<Utc>, metadata: &[u8]) -> StratisResult<()> {
+    fn save_state(&mut self, time: &UtcDateTime, metadata: &[u8]) -> StratisResult<()> {
         let mut f = OpenOptions::new()
             .read(true)
             .write(true)

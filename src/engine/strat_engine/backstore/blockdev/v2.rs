@@ -11,7 +11,6 @@ use std::{
     path::Path,
 };
 
-use chrono::{DateTime, Utc};
 use serde_json::Value;
 use time::UtcDateTime;
 
@@ -153,7 +152,7 @@ impl StratBlockDev {
         &self.dev
     }
 
-    pub fn save_state(&mut self, time: &DateTime<Utc>, metadata: &[u8]) -> StratisResult<()> {
+    pub fn save_state(&mut self, time: &UtcDateTime, metadata: &[u8]) -> StratisResult<()> {
         let mut f = OpenOptions::new().write(true).open(self.devnode())?;
         self.bda.save_state(time, metadata, &mut f)
     }
@@ -326,7 +325,7 @@ impl InternalBlockDev for StratBlockDev {
         }
     }
 
-    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &DateTime<Utc>)>> {
+    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &UtcDateTime)>> {
         let mut f = OpenOptions::new().read(true).open(&*self.devnode)?;
         match (self.bda.load_state(&mut f)?, self.bda.last_update_time()) {
             (Some(state), Some(time)) => Ok(Some((state, time))),
@@ -337,7 +336,7 @@ impl InternalBlockDev for StratBlockDev {
         }
     }
 
-    fn save_state(&mut self, time: &DateTime<Utc>, metadata: &[u8]) -> StratisResult<()> {
+    fn save_state(&mut self, time: &UtcDateTime, metadata: &[u8]) -> StratisResult<()> {
         let mut f = OpenOptions::new()
             .read(true)
             .write(true)

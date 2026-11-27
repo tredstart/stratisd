@@ -4,7 +4,6 @@
 
 use std::io::{Read, Seek};
 
-use chrono::{DateTime, Utc};
 use time::UtcDateTime;
 
 use crate::{
@@ -96,7 +95,7 @@ impl BDA {
     /// Save metadata to the disk
     pub fn save_state<F>(
         &mut self,
-        time: &DateTime<Utc>,
+        time: &UtcDateTime,
         metadata: &[u8],
         f: &mut F,
     ) -> StratisResult<()>
@@ -118,7 +117,7 @@ impl BDA {
 
     /// The time when the most recent metadata was written to the BDA,
     /// if any.
-    pub fn last_update_time(&self) -> Option<&DateTime<Utc>> {
+    pub fn last_update_time(&self) -> Option<&UtcDateTime> {
         self.regions.last_update_time()
     }
 
@@ -225,9 +224,9 @@ mod tests {
         );
         bda.initialize(&mut buf).unwrap();
 
-        let timestamp0 = Utc::now();
+        let timestamp0 = UtcDateTime::now();
         thread::sleep(sleep_time);
-        let timestamp1 = Utc::now();
+        let timestamp1 = UtcDateTime::now();
 
         let mut buf = Cursor::new(vec![
             0;
@@ -242,9 +241,9 @@ mod tests {
         // Error, because current timestamp is older than written to newer.
         assert_matches!(bda.save_state(&timestamp0, &data, &mut buf), Err(_));
 
-        let timestamp2 = Utc::now();
+        let timestamp2 = UtcDateTime::now();
         thread::sleep(sleep_time);
-        let timestamp3 = Utc::now();
+        let timestamp3 = UtcDateTime::now();
 
         bda.save_state(&timestamp3, &data, &mut buf).unwrap();
 
@@ -275,7 +274,7 @@ mod tests {
                 UtcDateTime::now(),
             );
             bda.initialize(&mut buf).unwrap();
-            let current_time = Utc::now();
+            let current_time = UtcDateTime::now();
             bda.save_state(&current_time, state, &mut buf).unwrap();
             let loaded_state = bda.load_state(&mut buf).unwrap();
             prop_assert!(bda.last_update_time().map(|t| t == &current_time).unwrap_or(false));
@@ -288,7 +287,7 @@ mod tests {
             prop_assert!(loaded_state.map(|s| &s == state).unwrap_or(false));
             prop_assert!(bda.last_update_time().map(|t| t == &current_time).unwrap_or(false));
 
-            let current_time = Utc::now();
+            let current_time = UtcDateTime::now();
             bda.save_state(&current_time, next_state, &mut buf)
                 .unwrap();
             let loaded_state = bda.load_state(&mut buf).unwrap();

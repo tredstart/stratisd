@@ -4,7 +4,7 @@
 
 use std::{fmt, path::Path};
 
-use chrono::{DateTime, Utc};
+use time::UtcDateTime;
 
 use devicemapper::{Device, Sectors};
 
@@ -98,10 +98,10 @@ pub trait InternalBlockDev {
     fn calc_new_size(&self) -> StratisResult<Option<Sectors>>;
 
     /// Load the pool-level metadata for the given block device.
-    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &DateTime<Utc>)>>;
+    fn load_state(&self) -> StratisResult<Option<(Vec<u8>, &UtcDateTime)>>;
 
     /// Save the current metadata state to block device.
-    fn save_state(&mut self, time: &DateTime<Utc>, metadata: &[u8]) -> StratisResult<()>;
+    fn save_state(&mut self, time: &UtcDateTime, metadata: &[u8]) -> StratisResult<()>;
 
     /// If a pool is encrypted, tear down the cryptsetup devicemapper devices on the
     /// physical device.

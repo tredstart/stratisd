@@ -14,6 +14,7 @@ use chrono::{DateTime, Utc};
 use either::Either;
 use libcryptsetup_rs::SafeMemHandle;
 use serde_json::{Map, Value};
+use time::UtcDateTime;
 
 use devicemapper::Sectors;
 
@@ -52,7 +53,7 @@ use crate::{
 };
 
 type MetadataResult = StratisResult<(
-    DateTime<Utc>,
+    UtcDateTime,
     PoolSave,
     Option<Vec<Either<PathBuf, PathBuf>>>,
 )>;

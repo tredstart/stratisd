@@ -151,7 +151,7 @@ impl MDARegions {
     pub fn save_state<F>(
         &mut self,
         header_size: Bytes,
-        time: &DateTime<Utc>,
+        time: &UtcDateTime,
         data: &[u8],
         f: &mut F,
     ) -> StratisResult<()>
@@ -256,7 +256,7 @@ impl MDARegions {
     }
 
     /// The last update time for these MDA regions
-    pub fn last_update_time(&self) -> Option<&DateTime<Utc>> {
+    pub fn last_update_time(&self) -> Option<&UtcDateTime> {
         self.mda_headers[self.newer()]
             .as_ref()
             .map(|h| &h.last_updated)
